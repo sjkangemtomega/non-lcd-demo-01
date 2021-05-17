@@ -29,8 +29,7 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
     var lastTimestamp = CMTime()
     public var fps = 15
     
-    let model = Inceptionv3()
-    let yoloModel = YOLOv3()
+//    let yoloModel = YOLOv3()
     let context = CIContext()
     
     // VISION
@@ -54,6 +53,7 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
         
         // start captureSession configuration
         captureSession.beginConfiguration()
+//        captureSession.sessionPreset = .medium
         captureSession.sessionPreset = .vga640x480
         
         guard captureSession.canAddInput(captureDeviceInput) else {
@@ -66,24 +66,26 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
             kCVPixelBufferPixelFormatTypeKey as String: Int(kCMPixelFormat_32BGRA)
         ]
 
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true
+        videoDataOutput.videoSettings = settings
+        videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
+        
         // kCVPixelFormatType_420YpCbCr8BiPlanarFullRange
         
         // add videoDataOutput to the session
         if captureSession.canAddOutput(videoDataOutput) {
             captureSession.addOutput(videoDataOutput)
-            
-            videoDataOutput.alwaysDiscardsLateVideoFrames = true
-            videoDataOutput.videoSettings = settings
-            videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
         } else {
             captureSession.commitConfiguration()
             return
         }
         
+        videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .portraitUpsideDown
+        
         // set connection
         let captureConnection = videoDataOutput.connection(with: .video)
         captureConnection?.isEnabled = true
-
+        
         // set buffer size
         do {
           try captureDevice!.lockForConfiguration()
@@ -96,12 +98,13 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
         } catch {
           print(error)
         }
-          
+        
         // commit captureSession Configuration
         captureSession.commitConfiguration()
 
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspect
+        previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        
         previewLayer.frame = previewLayer.bounds
 //        previewLayer.connection?.videoOrientation = .portrait
         
@@ -167,15 +170,15 @@ extension VideoAnalyzerInteractor: AVCaptureVideoDataOutputSampleBufferDelegate 
 
             switch curDeviceOrientation {
             case UIDeviceOrientation.portraitUpsideDown:  // Device oriented vertically, home button on the top
-                exifOrientation = .left
+                exifOrientation = .up
             case UIDeviceOrientation.landscapeLeft:       // Device oriented horizontally, home button on the right
-                exifOrientation = .upMirrored
+                exifOrientation = .left
             case UIDeviceOrientation.landscapeRight:      // Device oriented horizontally, home button on the left
-                exifOrientation = .down
+                exifOrientation = .right
             case UIDeviceOrientation.portrait:            // Device oriented vertically, home button on the bottom
-                exifOrientation = .up
+                exifOrientation = .down
             default:
-                exifOrientation = .up
+                exifOrientation = .down
             }
 
             let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: scaledPixelBuffer, orientation: exifOrientation, options: [:])
@@ -218,7 +221,7 @@ extension VideoAnalyzerInteractor {
         // Setup Vision parts
         let error: NSError! = nil
         
-        guard let modelURL = Bundle.main.url(forResource: "YOLOv3", withExtension: "mlmodelc") else {
+        guard let modelURL = Bundle.main.url(forResource: "YOLOv3Tiny", withExtension: "mlmodelc") else {
             return NSError(domain: "VisionObjectRecognitionViewController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Model file is missing"])
         }
         do {
