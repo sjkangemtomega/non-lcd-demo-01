@@ -1,11 +1,3 @@
-//
-//  SimpleVideoCapturePresenter.swift
-//  SwiftUI-AVFundation
-//
-//  Created by satoutakeshi on 2020/06/13.
-//  Copyright © 2020 satoutakeshi. All rights reserved.
-//
-
 import Foundation
 import AVKit
 import Combine
@@ -48,7 +40,10 @@ final class VideoAnalyzerPresenter: ObservableObject {
                 break
             case .onDisappear:
                 interactor.stopSession()
-                interactor.teardownAVCapture()
+                
+                interactor.setupAVCaptureSession()
+                interactor.setupAVCapture()
+//                interactor.teardownAVCapture()
                 break
             case .tappedCameraButton:
                 interactor.takePhoto()

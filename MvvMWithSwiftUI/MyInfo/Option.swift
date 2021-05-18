@@ -107,9 +107,6 @@ extension Option {
     
     static let options: [Option] = [
         .init(id: 1, title: "General", isAddSection: false, values: generalValues),
-        .init(id: 2, title: "Accessibility", isAddSection: false, values: accessibilityValues),
-        .init(id: 3, title: "Privacy", isAddSection: false, values: privacyValues),
-        .init(id: 4, title: "Password & Accounts", isAddSection: true, values: passwordAndAccountsValues),
-        .init(id: 5, title: "Maps", isAddSection: false, values: mapsValues),
+        .init(id: 2, title: "Privacy", isAddSection: false, values: privacyValues),
     ]
 }

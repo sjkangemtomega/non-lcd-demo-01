@@ -13,6 +13,8 @@ class Settings: ObservableObject {
     
     @Published var isToggleOn = false { didSet { update() } }
     
+    @Published var isWifiOn = false { didSet { update() } }
+    
     func update() {
         didChange.send(())
     }

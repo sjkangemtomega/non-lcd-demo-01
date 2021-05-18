@@ -6,7 +6,7 @@ struct WiFiView : View {
     
     var body: some View {
         Group() {
-            Picker(selection: $wifi.type, label: WifiContainer()) {
+            Picker(selection: $wifi.type, label: WifiContainer(wifi: wifi)) {
                 ForEach(0 ..< wifi.types.count) {
                     Text(self.wifi.types[$0]).tag($0).font(.system(size: 20))
                 }
@@ -26,6 +26,8 @@ struct WiFiView : View {
 
 //WiFiView.swift
 struct WifiContainer: View {
+    @ObservedObject var wifi: Settings
+    
     var body: some View {
         HStack {
             Image(systemName: "wifi")
@@ -34,6 +36,7 @@ struct WifiContainer: View {
                 .frame(width: 25, height: 25)
                 .clipped()
                 .aspectRatio(contentMode: .fit)
+                .foregroundColor(wifi.isWifiOn ? .blue:.gray)
             Text("WiFi")
                 .foregroundColor(.blue)
                 .font(.system(size: 18))

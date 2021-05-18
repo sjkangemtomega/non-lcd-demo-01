@@ -1,11 +1,3 @@
-//
-//  VideoAnalyzerInteractor.swift
-//  SwiftUI-AVFundation
-//
-//  Created by satoutakeshi on 2020/06/13.
-//  Copyright © 2020 satoutakeshi. All rights reserved.
-//
-
 import AVFoundation
 import Vision
 import UIKit
@@ -65,7 +57,7 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
         let settings: [String: Any] = [
             kCVPixelBufferPixelFormatTypeKey as String: Int(kCMPixelFormat_32BGRA)
         ]
-
+        
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
         videoDataOutput.videoSettings = settings
         videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
@@ -80,6 +72,21 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
             return
         }
         
+//        let curDeviceOrientation = UIDevice.current.orientation
+//
+//        switch curDeviceOrientation {
+//        case UIDeviceOrientation.portraitUpsideDown:  // Device oriented vertically, home button on the top
+//            videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .portraitUpsideDown
+//        case UIDeviceOrientation.landscapeLeft:       // Device oriented horizontally, home button on the right
+//            videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .landscapeLeft
+//        case UIDeviceOrientation.landscapeRight:      // Device oriented horizontally, home button on the left
+//            videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .landscapeRight
+//        case UIDeviceOrientation.portrait:            // Device oriented vertically, home button on the bottom
+//            videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
+//        default:
+//            videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .portrait
+//        }
+        
         videoDataOutput.connection(with: AVMediaType.video)?.videoOrientation = .portraitUpsideDown
         
         // set connection
@@ -92,8 +99,6 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
           let dimensions = CMVideoFormatDescriptionGetDimensions((captureDevice?.activeFormat.formatDescription)!)
           bufferSize.width = CGFloat(dimensions.width)
           bufferSize.height = CGFloat(dimensions.height)
-//            bufferSize.width = 416
-//            bufferSize.height = 416
           captureDevice!.unlockForConfiguration()
         } catch {
           print(error)
@@ -104,12 +109,9 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
 
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-        
         previewLayer.frame = previewLayer.bounds
-//        previewLayer.connection?.videoOrientation = .portrait
         
-//        self.previewLayer?.frame = rootLayer.bounds
-//        rootLayer.addSublayer(previewLayer)
+        
      }
 
     func startSession() {
@@ -124,9 +126,6 @@ final class VideoAnalyzerInteractor: NSObject, ObservableObject {
             if !self.captureSession.isRunning { return }
             self.captureSession.stopRunning()
         }
-
-//        previewLayer?.removeFromSuperlayer()
-//        previewLayer = nil
     }
     
     func takePhoto() {
@@ -159,11 +158,6 @@ extension VideoAnalyzerInteractor: AVCaptureVideoDataOutputSampleBufferDelegate 
             guard let scaledPixelBuffer = CIImage(cvImageBuffer: pixelBuffer).resize(size: CGSize(width: 416, height: 416)).toPixelBuffer(context: context) else {
                 return
             }
-
-//            let scaledSize = CGSize(width: 299, height: 299)
-//            guard let scaledPixelBuffer = pixelBuffer.resized(to: scaledSize) else {
-//                return
-//            }
 
             let curDeviceOrientation = UIDevice.current.orientation
             let exifOrientation: CGImagePropertyOrientation

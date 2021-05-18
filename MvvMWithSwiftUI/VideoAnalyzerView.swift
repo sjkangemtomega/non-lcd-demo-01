@@ -12,6 +12,7 @@ import AVFoundation
 struct VideoAnalyzerView: View {
     @ObservedObject var presenter: VideoAnalyzerPresenter
     @StateObject var viewRouter: ViewRouter
+    @State var orientation = UIDeviceOrientation.unknown
     
     var body: some View {
         ZStack {
@@ -38,6 +39,12 @@ struct VideoAnalyzerView: View {
         .onDisappear {
             presenter.apply(inputs: .onDisappear)
         }
+        .onRotate(perform: { newOrientation in
+            self.orientation = newOrientation
+            
+//            presenter.apply(inputs: .onDisappear)
+//            presenter.apply(inputs: .onAppear)
+        })
         
         
     }

@@ -13,6 +13,7 @@ class AppState: ObservableObject {
     @Published var selectedItem: File? = nil
     @Published var isDeviceConnected: Bool = false
     @Published var isDeviceConnecting: Bool = false
+    @Published var isSignedIn: Bool = false
     
     init() {
         //

@@ -16,6 +16,11 @@ struct CameraView: View {
         ZStack {
             VideoAnalyzerView(presenter: presenter, viewRouter: viewRouter)
         }
+        .onAppear() {
+            if !appState.isDeviceConnected {
+                viewRouter.currentPage = .connect
+            }
+        }
     }
 }
 

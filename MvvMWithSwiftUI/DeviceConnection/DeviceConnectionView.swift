@@ -53,9 +53,16 @@ struct DeviceConnectionView: View {
                     }
                 }
             } else {
-                ProgressBarView(progress: self.$progressValue)
-                                        .frame(width: 150.0, height: 150.0)
-                                        .padding(40.0)
+                VStack(alignment: .center) {
+                    ProgressBarView(progress: self.$progressValue)
+                        .frame(width: 150.0, height: 150.0)
+                        .padding(40.0)
+                    
+                    Text("Connecting...")
+                        .font(.title3)
+                        .padding(6)
+                        .foregroundColor(.blue).opacity(0.5)
+                }
             }
         }
         .onAppear() {

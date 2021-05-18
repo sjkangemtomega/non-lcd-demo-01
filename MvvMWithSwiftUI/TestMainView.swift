@@ -91,6 +91,8 @@ struct TestMainView: View {
                         }
                     }
          } //eog
+        .onRotate(perform: { newOrientation in
+        })
     }
 }
 

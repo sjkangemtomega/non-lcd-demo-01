@@ -14,10 +14,13 @@ struct BluetoothView: View {
                     .frame(width: 25, height: 25)
                     .clipped()
                     .aspectRatio(contentMode: .fit)
+                    .foregroundColor(bluetooth.isBluetoothOn ? Color.blue:Color.gray)
+                
                 Text("Bluetooth")
                     .foregroundColor(.blue)
                     .font(.system(size: 20))
                     .frame(width: 150,height: 40, alignment: .leading)
+                
                 Text(bluetooth.isBluetoothOn ? "On" : "Off")
                     .foregroundColor(.gray)
                     .font(.system(size: 20))

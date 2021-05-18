@@ -4,12 +4,13 @@ import Combine
 
 struct SettingsView : View {
     @ObservedObject var setting = Settings()
+    let appState = AppState()
     
     var body: some View {
         NavigationView {
             Form {
                 Section {
-                    SignInView()
+                    SignInView(appState: appState)
                 }
                 Section {
                     BluetoothView()
@@ -46,12 +47,32 @@ struct OptionSettingsView : View {
     var body: some View {
         return NavigationLink(destination: OptionInnerDetail(option: option)) {
             HStack {
-                Image("default")
-                    .resizable()
-                    .cornerRadius(12)
-                    .frame(width: 25, height: 25)
-                    .clipped()
-                    .aspectRatio(contentMode: .fit)
+                switch option.title {
+                case "General":
+                    Image(systemName: "gearshape")
+                        .resizable()
+                        .cornerRadius(12)
+                        .frame(width: 25, height: 25)
+                        .clipped()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.gray)
+                case "Privacy":
+                    Image(systemName: "hand.raised")
+                        .resizable()
+                        .cornerRadius(12)
+                        .frame(width: 25, height: 25)
+                        .clipped()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundColor(.gray)
+                default:
+                    Image(systemName: "")
+                        .resizable()
+                        .cornerRadius(12)
+                        .frame(width: 25, height: 25)
+                        .clipped()
+                        .aspectRatio(contentMode: .fit)
+                }
+                
                 Text(option.title)
                     .foregroundColor(.blue)
                     .font(.system(size: 18))

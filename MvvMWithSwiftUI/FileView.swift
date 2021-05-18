@@ -11,6 +11,9 @@ struct FileView: View {
     @EnvironmentObject var appState: AppState
     @State private var isPresented = false
     
+//    var onRefresh: () -> Void
+//    @State var refresh:Bool = false
+    
     @State var files: [File] = [
         File(name: "2021-01-01,09:00, 000001", file: "sample.mp4"),
         File(name: "2021-01-02,09:00, 000001", file: "sample.mp4"),
@@ -35,25 +38,27 @@ struct FileView: View {
     ]
     
     var body: some View {
-        NavigationView {
-            List(files) { file in
-                HStack {
-                    Image(systemName: "video")
-                        .padding(.trailing, 5)
-                    Text("\(file.name)")
-                    Spacer()
-                    Button(action: {
-                        isPresented.toggle()
-                    }, label: {
-                        Image(systemName: "chevron.forward")
+        GeometryReader { reader in
+            NavigationView {
+                List(files) { file in
+                    HStack {
+                        Image(systemName: "video")
+                            .padding(.trailing, 5)
+                        Text("\(file.name)")
+                        Spacer()
+                        Button(action: {
+                            isPresented.toggle()
+                        }, label: {
+                            Image(systemName: "chevron.forward")
+                        })
+                        .padding(.trailing, 15)
+                    }
+                    .fullScreenCover(isPresented: $isPresented, content: {
+                        FileDetailView(file: file)
                     })
-                    .padding(.trailing, 15)
                 }
-                .fullScreenCover(isPresented: $isPresented, content: {
-                    FileDetailView(file: file)
-                })
+                .navigationBarTitle("Downloaded Files", displayMode: .automatic)
             }
-            .navigationBarTitle("Downloaded Files", displayMode: .automatic)
         }
     }
 }
@@ -83,8 +88,34 @@ struct File: Identifiable, Hashable {
     var file: String
 }
 
-struct ForthView_Previews: PreviewProvider {
-    static var previews: some View {
-        FileView()
-    }
-}
+//struct RefreshControl: View {
+//    var coordinateSpace: CoordinateSpace
+//    var onRefresh: ()->Void
+//    @State var refresh: Bool = false
+//    var body: some View {
+//        GeometryReader { geo in
+//            if (geo.frame(in: coordinateSpace).midY > 50) {
+//                Spacer()
+//                    .onAppear {
+//                        if refresh == false {
+//                            onRefresh() ///call refresh once if pulled more than 50px
+//                        }
+//                        refresh = true
+//                    }
+//            } else if (geo.frame(in: coordinateSpace).maxY < 1) {
+//                Spacer()
+//                    .onAppear {
+//                        refresh = false
+//                        ///reset  refresh if view shrink back
+//                    }
+//            }
+//            //Add Animation
+//        }
+//    }
+//}
+
+//struct ForthView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FileView()
+//    }
+//}
